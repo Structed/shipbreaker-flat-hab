@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>FlatHab</AssemblyName>
+    <RootNamespace>FlatHab</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Version>0.1.0</Version>
+    <DebugType>embedded</DebugType>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Override with: dotnet build -c Release -p:GameDir="D:\SteamLibrary\steamapps\common\Hardspace Shipbreaker" -->
+    <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Hardspace Shipbreaker</GameDir>
+    <ManagedDir>$(GameDir)\Shipbreaker_Data\Managed</ManagedDir>
+    <BepInExCoreDir Condition="'$(BepInExCoreDir)' == ''">$(GameDir)\BepInEx\core</BepInExCoreDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(BepInExCoreDir)\BepInEx.dll" Private="false" />
+    <Reference Include="$(BepInExCoreDir)\0Harmony.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.dll;$(ManagedDir)\UnityEngine.*.dll;$(ManagedDir)\Unity.*.dll;$(ManagedDir)\Cinemachine.dll;$(ManagedDir)\Doozy*.dll;$(ManagedDir)\BBI*.dll;$(ManagedDir)\Carbon*.dll;$(ManagedDir)\InControl.dll" Private="false" />
+  </ItemGroup>
+
+  <Target Name="CheckGameReferences" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(ManagedDir)\UnityEngine.dll')" Text="Hardspace: Shipbreaker not found at '$(GameDir)'. Pass -p:GameDir=&quot;&lt;game folder&gt;&quot;." />
+    <Error Condition="!Exists('$(BepInExCoreDir)\BepInEx.dll')" Text="BepInEx 5 not found at '$(BepInExCoreDir)'. Install it into the game first (see README), or pass -p:BepInExCoreDir=&quot;&lt;BepInEx\core folder&gt;&quot;." />
+  </Target>
+
+  <!-- dotnet build -c Release -p:DeployToGame=true copies the plugin straight into the game. -->
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="'$(DeployToGame)' == 'true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\FlatHab" />
+    <Message Importance="high" Text="Deployed $(TargetFileName) to $(GameDir)\BepInEx\plugins\FlatHab" />
+  </Target>
+
+</Project>
