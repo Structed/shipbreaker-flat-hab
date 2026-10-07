@@ -40,22 +40,25 @@ window to the desk to start a shift. Pick what you want to do and go.
 
 ## Installation
 
+Download `FlatHab-<version>.zip` from the [latest release](https://github.com/Structed/shipbreaker-flat-hab/releases/latest) and extract it.
+
 ### With the script
 
-1. Build the mod (see [Building](#building)), or put a `FlatHab.dll` next to `Install-FlatHab.ps1`.
-2. Close the game and run:
+Close the game, open PowerShell in the extracted folder and run:
 
-   ```powershell
-   .\Install-FlatHab.ps1
-   ```
+```powershell
+powershell -ExecutionPolicy Bypass -File .\Install-FlatHab.ps1
+```
 
-The script finds the game in your Steam libraries. If BepInEx isn't installed yet, it downloads BepInEx 5.4.23.5 and checks it against a pinned SHA-256 hash. Then it copies the mod to `BepInEx\plugins\FlatHab\`. If your game is elsewhere, use `-GameDir "<game folder>"`.
+The script finds the game in your Steam libraries. If BepInEx isn't installed yet, it downloads BepInEx 5.4.23.5 and checks it against a pinned SHA-256 hash. Then it copies the mod to `BepInEx\plugins\FlatHab\`. If your game is elsewhere, add `-GameDir "<game folder>"`.
 
 ### Manually
 
 1. Extract [BepInEx_win_x64_5.4.23.5.zip](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.23.5) into the game folder, next to `Shipbreaker.exe`.
 2. Copy `FlatHab.dll` to `<game folder>\BepInEx\plugins\FlatHab\`.
 3. Start the game. `BepInEx\LogOutput.log` should contain `Flat Hab 0.1.0 loaded`.
+
+To install a version you built yourself, run `.\Install-FlatHab.ps1` from the repository root. It picks up `src\FlatHab\bin\Release\FlatHab.dll` automatically.
 
 ## Configuration
 
@@ -73,15 +76,15 @@ After the first launch, the settings are in `BepInEx\config\structed.shipbreaker
 ## Uninstalling
 
 ```powershell
-.\Install-FlatHab.ps1 -Uninstall                 # removes the mod only
-.\Install-FlatHab.ps1 -Uninstall -RemoveBepInEx  # also removes BepInEx (and any other BepInEx mods)
+powershell -ExecutionPolicy Bypass -File .\Install-FlatHab.ps1 -Uninstall                 # removes the mod only
+powershell -ExecutionPolicy Bypass -File .\Install-FlatHab.ps1 -Uninstall -RemoveBepInEx  # also removes BepInEx (and any other BepInEx mods)
 ```
 
 To uninstall by hand, delete `BepInEx\plugins\FlatHab\`. To remove BepInEx entirely, also delete `BepInEx\`, `winhttp.dll`, `doorstop_config.ini`, `.doorstop_version`, and `changelog.txt` from the game folder.
 
 ## Building
 
-You need the [.NET SDK](https://dotnet.microsoft.com/download) (6 or newer) and a copy of the game with BepInEx installed. The project compiles against the game's own assemblies, so no game files are included in this repository.
+You need the [.NET SDK](https://dotnet.microsoft.com/download) (6 or newer) and a copy of the game with BepInEx installed. The project compiles against the game's own assemblies, so no game files are included in this repository. You only need to build if you want to change the mod; players can use the release zip.
 
 ```powershell
 dotnet build src\FlatHab -c Release -p:GameDir="D:\SteamLibrary\steamapps\common\Hardspace Shipbreaker"
